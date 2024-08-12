@@ -10,7 +10,7 @@ tests:
           value: [ helm, kubernetes, yaml ]
   - it: Should set the data.echoedList property to a YAML list with the items from the testList value. For instance, [ 1, 2, 3 ] -> [ 1, 2, 3 ]
     set:
-      TestList: [ 1, 2, 3 ]
+      TestList: [ 1, 2, 3 ] 
     asserts:
       - equal:
           path: data.echoedList

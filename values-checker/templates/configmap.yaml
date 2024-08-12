@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: helm-values
 data:
-{{ toYaml .Values | indent 2 }}
+{{ toYaml . | indent 2 }}

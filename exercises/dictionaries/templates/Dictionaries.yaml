@@ -4,20 +4,38 @@ metadata:
   name: {{ .Release.Name }}-configmap
 data:
   echoedDictionary: 
-    {{ .Values.TestDictionary }}
+{{ .Values.TestDictionary | toYaml | indent 4 }}
+    
   newDictionary: 
-    {{ .Values.TestDictionary }}
+    {{ .Values.TestKey }}:
+    {{ .Values.TestValue | toYaml | indent 8 }}
   lookupValue:
-    {{ .Values.TestKey }}
+    {{ get .Values.TestDictionary .Values.TestKey }}
   keyPresent:
-    {{ .Values.TestKey }}
+    {{ hasKey .Values.TestDictionary .Values.TestKey }}
   updatedDict:
-    {{ .Values.TestDictionary }}
+{{ $dictCopy := deepCopy .Values.TestDictionary | merge (dict) }}
+{{ $updated := set $dictCopy .Values.TestKey .Values.TestValue }}
+{{ $updated
+   | toYaml
+   | indent 4
+}}
   removedDict:
-    {{ .Values.TestDictionary }}
+{{ $dictCopy2 := deepCopy .Values.TestDictionary }}
+{{ if not (hasKey $dictCopy .Values.TestKey) }}
+{{ $dictCopy2 | toYaml | indent 4 }}
+{{ else }}
+{{ unset $dictCopy2 .Values.TestKey 
+   | toYaml
+   | indent 4
+}}
+{{ end }}
   omittedDict:
-    {{ .Values.TestDictionary }}
+{{ omit .Values.TestDictionary .Values.TestKey 
+   | toYaml
+   | indent 4
+}}
   dictionaryKeys:
-    {{ .Values.TestDictionary }}
+{{ keys .Values.EmptyDictionary | sortAlpha | toYaml | indent 4 }}
   dictionaryValues:
-    {{ .Values.TestDictionary }}
+{{ values .Values.EmptyDictionary | sortAlpha | toYaml | indent 4 }}
