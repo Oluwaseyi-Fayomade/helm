@@ -1,0 +1,28 @@
+suite: test deployment
+templates:
+  - deployment.yaml
+tests:
+  - it: should work
+    set:
+      image.tag: latest
+    asserts:
+      - isKind:
+          of: Deployment
+      - matchRegex:
+          path: metadata.name
+          pattern: -unit-test-lab$
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: nginx:latest
+  - it: should set the replicas property to the replicaCount value
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 1
+  - it: should set the replicas property to the replicaCount value
+    set:
+      replicaCount: 5
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 5
